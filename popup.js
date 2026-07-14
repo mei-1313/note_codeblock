@@ -10,6 +10,34 @@ const DEFAULT_SETTINGS = {
   lineHeight: 1.6
 };
 
+// Safe API Fallback: Use chrome.storage.local if available, otherwise fallback to localStorage (for local file preview)
+const storage = (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) ? chrome.storage.local : {
+  get: (defaults, callback) => {
+    const data = {};
+    for (const key in defaults) {
+      const val = localStorage.getItem('note_codeblock_' + key);
+      if (val !== null) {
+        if (typeof defaults[key] === 'boolean') {
+          data[key] = (val === 'true');
+        } else if (typeof defaults[key] === 'number') {
+          data[key] = parseInt(val, 10);
+        } else {
+          data[key] = val;
+        }
+      } else {
+        data[key] = defaults[key];
+      }
+    }
+    setTimeout(() => callback(data), 0);
+  },
+  set: (obj, callback) => {
+    for (const key in obj) {
+      localStorage.setItem('note_codeblock_' + key, obj[key]);
+    }
+    if (callback) setTimeout(callback, 0);
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const themeSelect = document.getElementById('theme');
   const fontSelect = document.getElementById('font');
@@ -18,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const showLineNumbersCheckbox = document.getElementById('showLineNumbers');
 
   // 1. Retrieve saved preferences and set initial states
-  chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+  storage.get(DEFAULT_SETTINGS, (settings) => {
     themeSelect.value = settings.theme;
     fontSelect.value = settings.font;
     fontSizeSlider.value = settings.fontSize;
@@ -26,22 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
     showLineNumbersCheckbox.checked = settings.showLineNumbers;
   });
 
-  // 2. Event listeners to save choices instantly
+  // 2. Event listeners to save choices instantly (Auto-Save)
   themeSelect.addEventListener('change', (e) => {
-    chrome.storage.sync.set({ theme: e.target.value });
+    storage.set({ theme: e.target.value });
   });
 
   fontSelect.addEventListener('change', (e) => {
-    chrome.storage.sync.set({ font: e.target.value });
+    storage.set({ font: e.target.value });
   });
 
   fontSizeSlider.addEventListener('input', (e) => {
     const size = parseInt(e.target.value, 10);
     fontSizeVal.textContent = `${size}px`;
-    chrome.storage.sync.set({ fontSize: size });
+    storage.set({ fontSize: size });
   });
 
   showLineNumbersCheckbox.addEventListener('change', (e) => {
-    chrome.storage.sync.set({ showLineNumbers: e.target.checked });
+    storage.set({ showLineNumbers: e.target.checked });
   });
 });

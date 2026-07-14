@@ -18,7 +18,7 @@
     
     window.chrome = {
       storage: {
-        sync: {
+        local: {
           get: (defaults, callback) => {
             setTimeout(() => {
               callback({ ...defaults, ...mockStorage });
@@ -28,7 +28,7 @@
             Object.assign(mockStorage, obj);
             // Trigger change listeners
             listeners.forEach(listener => {
-              listener(obj, 'sync');
+              listener(obj, 'local');
             });
             if (callback) callback();
           }
@@ -248,7 +248,7 @@
   </div>
 
   <script>
-    // Link simulated controls directly to mock chrome.storage.sync
+    // Link simulated controls directly to mock chrome.storage.local
     document.addEventListener('DOMContentLoaded', () => {
       const themeSel = document.getElementById('sim-theme');
       const fontSel = document.getElementById('sim-font');
@@ -257,7 +257,7 @@
       const linesChk = document.getElementById('sim-showLineNumbers');
 
       const triggerSync = () => {
-        chrome.storage.sync.set({
+        chrome.storage.local.set({
           theme: themeSel.value,
           font: fontSel.value,
           fontSize: parseInt(sizeSli.value, 10),

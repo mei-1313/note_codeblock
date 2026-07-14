@@ -13,11 +13,14 @@ const DEFAULT_SETTINGS = {
 let currentSettings = { ...DEFAULT_SETTINGS };
 const wrapperMap = new WeakMap();
 
+// Track enhanced elements securely in extension memory (immune to React virtual DOM updates)
+const enhancedPres = new WeakSet();
+
 // Observe text changes in the original pre to keep the clone synced
 const preContentObserver = new MutationObserver((mutations) => {
   for (const mutation of mutations) {
     const originalPre = mutation.target.closest('pre');
-    if (originalPre && originalPre.classList.contains('note-visual-hidden')) {
+    if (originalPre) {
       const wrapper = wrapperMap.get(originalPre) || originalPre.nextElementSibling;
       if (wrapper && wrapper.classList.contains('note-code-wrapper')) {
         const clonedPre = wrapper.querySelector('.note-cloned-pre');
@@ -56,8 +59,8 @@ function updateLineNumbersDOM(container, text) {
 
 // Enhance a single pre block
 function enhanceCodeBlock(pre) {
-  // Guard clause against double enhancement
-  if (pre.classList.contains('note-visual-hidden') || pre.classList.contains('note-cloned-pre')) {
+  // Guard clause using WeakSet to prevent double enhancement
+  if (enhancedPres.has(pre)) {
     return;
   }
   
@@ -68,6 +71,9 @@ function enhanceCodeBlock(pre) {
 
   const codeEl = pre.querySelector('code');
   if (!codeEl) return;
+
+  // Mark pre as enhanced in our private WeakSet
+  enhancedPres.add(pre);
 
   // Create wrapper
   const wrapper = document.createElement('div');
@@ -129,7 +135,6 @@ function enhanceCodeBlock(pre) {
   `;
   
   copyBtn.addEventListener('click', () => {
-    // Read text directly from the original code element to ensure we get raw characters
     const text = codeEl.textContent;
     navigator.clipboard.writeText(text).then(() => {
       copyBtn.classList.add('copied');
@@ -182,9 +187,8 @@ function enhanceCodeBlock(pre) {
   // Map original pre to the wrapper
   wrapperMap.set(pre, wrapper);
 
-  // Hide the original pre element to prevent rendering clashes
+  // Hide the original pre element using inline styling as a first defense
   pre.style.setProperty('display', 'none', 'important');
-  pre.classList.add('note-visual-hidden');
 
   // Insert wrapper right after the hidden original pre
   pre.parentNode.insertBefore(wrapper, pre.nextSibling);
@@ -198,16 +202,17 @@ function enhanceCodeBlock(pre) {
 }
 
 // Enhance all eligible code blocks on the page
+// Clean up any dangling wrappers (whose corresponding pre block has been deleted by React)
 function enhanceAllCodeBlocks() {
-  const originalPres = document.querySelectorAll('pre[data-name="preCode"]:not(.note-cloned-pre):not(.note-visual-hidden)');
+  const originalPres = document.querySelectorAll('pre[data-name="preCode"]');
   originalPres.forEach(pre => {
+    if (enhancedPres.has(pre)) return;
     enhanceCodeBlock(pre);
   });
   
-  // Clean up any dangling wrappers
   document.querySelectorAll('.note-code-wrapper').forEach(wrapper => {
     const prev = wrapper.previousElementSibling;
-    if (!prev || !prev.classList.contains('note-visual-hidden')) {
+    if (!prev || prev.tagName !== 'PRE' || prev.getAttribute('data-name') !== 'preCode') {
       wrapper.remove();
     }
   });
@@ -254,25 +259,9 @@ function updateAllWrappers(settings) {
 const observer = new MutationObserver((mutations) => {
   let needsScan = false;
   for (const mutation of mutations) {
-    // Detect added node changes
     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
       needsScan = true;
       break;
-    }
-    
-    // Detect if original pre style has been changed/reset by note.com's SPA router
-    if (
-      mutation.type === 'attributes' &&
-      mutation.target.tagName === 'PRE' &&
-      mutation.attributeName === 'style'
-    ) {
-      const pre = mutation.target;
-      if (pre.getAttribute('data-name') === 'preCode' && !pre.classList.contains('note-cloned-pre')) {
-        if (pre.style.display !== 'none') {
-          pre.style.setProperty('display', 'none', 'important');
-          pre.classList.add('note-visual-hidden');
-        }
-      }
     }
   }
 
@@ -283,24 +272,22 @@ const observer = new MutationObserver((mutations) => {
 
 // Safe Chrome Storage API initialization
 const init = () => {
-  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
-    chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(DEFAULT_SETTINGS, (settings) => {
       currentSettings = { ...DEFAULT_SETTINGS, ...settings };
       enhanceAllCodeBlocks();
 
       // Begin observing DOM mutations on the body
       observer.observe(document.body, {
         childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['style']
+        subtree: true
       });
     });
 
     // Listen for settings modifications from popup
     chrome.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName === 'sync') {
-        chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+      if (areaName === 'local') {
+        chrome.storage.local.get(DEFAULT_SETTINGS, (settings) => {
           updateAllWrappers(settings);
         });
       }

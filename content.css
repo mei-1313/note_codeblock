@@ -134,6 +134,11 @@
    LAYOUT STYLING
    ========================================== */
 
+/* HIDES the original pre block automatically if enhanced by a sibling wrapper (SPA-safe) */
+pre[data-name="preCode"]:has(+ .note-code-wrapper) {
+  display: none !important;
+}
+
 .note-code-wrapper {
   background-color: var(--bg-color) !important;
   color: var(--fg-color) !important;
