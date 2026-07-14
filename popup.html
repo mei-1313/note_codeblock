@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>note CodeBlock Visualizer Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="4" width="20" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 8l-3 4 3 4M16 8l3 4-3 4M13 7l-2 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1>note.com</h1>
+          <h2>CodeBlock Enhancer</h2>
+        </div>
+      </div>
+    </header>
+
+    <main class="popup-body">
+      <!-- Theme Selection -->
+      <div class="settings-group">
+        <label for="theme" class="group-title">カラーテーマ</label>
+        <div class="select-wrapper">
+          <select id="theme">
+            <option value="one-dark">One Dark Pro</option>
+            <option value="dracula">Dracula</option>
+            <option value="monokai">Monokai</option>
+            <option value="github-dark">GitHub Dark</option>
+            <option value="github-light">GitHub Light</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Font Family -->
+      <div class="settings-group">
+        <label for="font" class="group-title">フォントファミリー</label>
+        <div class="select-wrapper">
+          <select id="font">
+            <option value="jetbrains-mono">JetBrains Mono</option>
+            <option value="fira-code">Fira Code</option>
+            <option value="source-code-pro">Source Code Pro</option>
+            <option value="system-mono">System Monospace</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Font Size Slider -->
+      <div class="settings-group">
+        <div class="slider-header">
+          <label for="fontSize" class="group-title">フォントサイズ</label>
+          <span id="fontSizeVal" class="value-badge">14px</span>
+        </div>
+        <input type="range" id="fontSize" min="11" max="22" step="1" value="14">
+      </div>
+
+      <!-- Line Numbers Toggle -->
+      <div class="settings-group toggle-group">
+        <span class="group-title">行番号を表示する</span>
+        <label class="switch">
+          <input type="checkbox" id="showLineNumbers">
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <span>Designed with CSS Magic</span>
+      <span class="version">v1.0.0</span>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

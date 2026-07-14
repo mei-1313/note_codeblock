@@ -1,0 +1,354 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Source+Code+Pro:wght@400;500&display=swap');
+
+/* ==========================================
+   THEME VARIABLES
+   ========================================== */
+
+/* One Dark Pro */
+.note-code-wrapper[data-theme="one-dark"] {
+  --bg-color: #282c34;
+  --fg-color: #abb2bf;
+  --comment-color: #5c6370;
+  --keyword-color: #c678dd;
+  --number-color: #d19a66;
+  --string-color: #98c379;
+  --title-color: #61afef;
+  --type-color: #e5c07b;
+  --tag-color: #e06c75;
+  --border-color: #3e4451;
+  --header-bg: #21252b;
+  --header-fg: #9da5b4;
+  --btn-hover-bg: #353b45;
+  --scrollbar-thumb: #4b5263;
+  --scrollbar-track: #282c34;
+  --line-number-color: #4b5263;
+  --line-number-border: #3e4451;
+  --copy-btn-success: #98c379;
+}
+
+/* Dracula */
+.note-code-wrapper[data-theme="dracula"] {
+  --bg-color: #282a36;
+  --fg-color: #f8f8f2;
+  --comment-color: #6272a4;
+  --keyword-color: #ff79c6;
+  --number-color: #bd93f9;
+  --string-color: #f1fa8c;
+  --title-color: #50fa7b;
+  --type-color: #8be9fd;
+  --tag-color: #ff79c6;
+  --border-color: #44475a;
+  --header-bg: #191a21;
+  --header-fg: #f8f8f2;
+  --btn-hover-bg: #44475a;
+  --scrollbar-thumb: #6272a4;
+  --scrollbar-track: #282a36;
+  --line-number-color: #6272a4;
+  --line-number-border: #44475a;
+  --copy-btn-success: #50fa7b;
+}
+
+/* GitHub Dark */
+.note-code-wrapper[data-theme="github-dark"] {
+  --bg-color: #0d1117;
+  --fg-color: #c9d1d9;
+  --comment-color: #8b949e;
+  --keyword-color: #ff7b72;
+  --number-color: #79c0ff;
+  --string-color: #a5d6ff;
+  --title-color: #d2a8ff;
+  --type-color: #ff7b72;
+  --tag-color: #7ee787;
+  --border-color: #30363d;
+  --header-bg: #161b22;
+  --header-fg: #8b949e;
+  --btn-hover-bg: #21262d;
+  --scrollbar-thumb: #30363d;
+  --scrollbar-track: #0d1117;
+  --line-number-color: #484f58;
+  --line-number-border: #30363d;
+  --copy-btn-success: #58a6ff;
+}
+
+/* GitHub Light */
+.note-code-wrapper[data-theme="github-light"] {
+  --bg-color: #ffffff;
+  --fg-color: #24292f;
+  --comment-color: #6e7781;
+  --keyword-color: #cf222e;
+  --number-color: #0550ae;
+  --string-color: #0a3069;
+  --title-color: #8250df;
+  --type-color: #cf222e;
+  --tag-color: #116329;
+  --border-color: #d0d7de;
+  --header-bg: #f6f8fa;
+  --header-fg: #57606a;
+  --btn-hover-bg: #eaeef2;
+  --scrollbar-thumb: #d0d7de;
+  --scrollbar-track: #ffffff;
+  --line-number-color: #8c959f;
+  --line-number-border: #d0d7de;
+  --copy-btn-success: #1a7f37;
+}
+
+/* Monokai */
+.note-code-wrapper[data-theme="monokai"] {
+  --bg-color: #272822;
+  --fg-color: #f8f8f2;
+  --comment-color: #75715e;
+  --keyword-color: #f92672;
+  --number-color: #ae81ff;
+  --string-color: #e6db74;
+  --title-color: #a6e22e;
+  --type-color: #66d9ef;
+  --tag-color: #f92672;
+  --border-color: #3e3d32;
+  --header-bg: #1e1f1c;
+  --header-fg: #cfcfc2;
+  --btn-hover-bg: #3e3d32;
+  --scrollbar-thumb: #75715e;
+  --scrollbar-track: #272822;
+  --line-number-color: #75715e;
+  --line-number-border: #3e3d32;
+  --copy-btn-success: #a6e22e;
+}
+
+/* ==========================================
+   FONT FAMILY MAPPINGS
+   ========================================== */
+.note-code-wrapper[data-font="jetbrains-mono"] {
+  --font-family: 'JetBrains Mono', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+.note-code-wrapper[data-font="fira-code"] {
+  --font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+.note-code-wrapper[data-font="source-code-pro"] {
+  --font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+.note-code-wrapper[data-font="system-mono"] {
+  --font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+/* ==========================================
+   LAYOUT STYLING
+   ========================================== */
+
+.note-code-wrapper {
+  background-color: var(--bg-color) !important;
+  color: var(--fg-color) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size, 14px) !important;
+  line-height: var(--line-height, 1.6) !important;
+  margin: 20px 0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+}
+
+/* Header Container */
+.note-code-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background-color: var(--header-bg) !important;
+  color: var(--header-fg) !important;
+  padding: 8px 16px !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  user-select: none !important;
+}
+
+/* Language Badge */
+.note-code-lang {
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  font-weight: 700 !important;
+  opacity: 0.85 !important;
+}
+
+/* Copy Code Button */
+.note-code-copy-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;
+  color: inherit !important;
+  padding: 4px 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-size: 11px !important;
+  font-family: inherit !important;
+  outline: none !important;
+}
+
+.note-code-copy-btn:hover {
+  background-color: var(--btn-hover-bg) !important;
+  color: var(--fg-color) !important;
+}
+
+.note-code-copy-btn.copied {
+  color: var(--copy-btn-success) !important;
+  border-color: var(--copy-btn-success) !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.note-code-copy-btn svg {
+  width: 13px !important;
+  height: 13px !important;
+  fill: currentColor !important;
+  transition: transform 0.2s ease !important;
+}
+
+.note-code-copy-btn:active svg {
+  transform: scale(0.9) !important;
+}
+
+/* Body Container */
+.note-code-body {
+  display: flex !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background-color: var(--bg-color) !important;
+}
+
+/* Line Numbers Sidebar */
+.note-code-line-numbers {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: right !important;
+  padding: 14px 12px 14px 16px !important;
+  user-select: none !important;
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size, 14px) !important;
+  line-height: var(--line-height, 1.6) !important;
+  color: var(--line-number-color) !important;
+  border-right: 1px solid var(--line-number-border) !important;
+  opacity: 0.65 !important;
+  background-color: var(--header-bg) !important;
+}
+
+.note-code-line-numbers span {
+  display: block !important;
+  height: calc(var(--line-height, 1.6) * var(--font-size, 14px)) !important;
+}
+
+/* Insulated Pre container (formerly pre[data-name="preCode"]) */
+.note-code-wrapper .note-cloned-pre {
+  flex-grow: 1 !important;
+  margin: 0 !important;
+  padding: 14px 16px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: pre !important;
+  word-wrap: normal !important;
+  word-break: normal !important;
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size, 14px) !important;
+  line-height: var(--line-height, 1.6) !important;
+  display: block !important;
+}
+
+.note-code-wrapper.with-line-numbers .note-cloned-pre {
+  padding-left: 12px !important;
+}
+
+/* Insulated Code block container (formerly code[data-name="code"]) */
+.note-code-wrapper .note-code-block {
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  color: var(--fg-color) !important;
+  white-space: pre !important;
+}
+
+/* Custom Scrollbars */
+.note-code-wrapper .note-cloned-pre::-webkit-scrollbar {
+  height: 8px !important;
+}
+
+.note-code-wrapper .note-cloned-pre::-webkit-scrollbar-track {
+  background: var(--scrollbar-track) !important;
+}
+
+.note-code-wrapper .note-cloned-pre::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb) !important;
+  border-radius: 4px !important;
+}
+
+.note-code-wrapper .note-cloned-pre::-webkit-scrollbar-thumb:hover {
+  filter: brightness(1.2) !important;
+}
+
+/* ==========================================
+   SYNTAX HIGHLIGHTING COLORS
+   ========================================== */
+.note-code-wrapper .hljs-keyword,
+.note-code-wrapper .hljs-selector-tag,
+.note-code-wrapper .hljs-doctag {
+  color: var(--keyword-color) !important;
+  font-weight: 600 !important;
+}
+
+.note-code-wrapper .hljs-number,
+.note-code-wrapper .hljs-literal,
+.note-code-wrapper .hljs-regexp,
+.note-code-wrapper .hljs-meta {
+  color: var(--number-color) !important;
+}
+
+.note-code-wrapper .hljs-string {
+  color: var(--string-color) !important;
+}
+
+.note-code-wrapper .hljs-comment,
+.note-code-wrapper .hljs-quote {
+  color: var(--comment-color) !important;
+  font-style: italic !important;
+}
+
+.note-code-wrapper .hljs-title,
+.note-code-wrapper .hljs-title.function_,
+.note-code-wrapper .hljs-name,
+.note-code-wrapper .hljs-section {
+  color: var(--title-color) !important;
+}
+
+.note-code-wrapper .hljs-type,
+.note-code-wrapper .hljs-class,
+.note-code-wrapper .hljs-title.class_ {
+  color: var(--type-color) !important;
+}
+
+.note-code-wrapper .hljs-attr,
+.note-code-wrapper .hljs-attribute,
+.note-code-wrapper .hljs-symbol,
+.note-code-wrapper .hljs-variable,
+.note-code-wrapper .hljs-template-variable {
+  color: var(--tag-color) !important;
+}
+
+.note-code-wrapper .hljs-built_in,
+.note-code-wrapper .hljs-addition {
+  color: var(--title-color) !important;
+}
+
+.note-code-wrapper .hljs-deletion {
+  color: var(--keyword-color) !important;
+}

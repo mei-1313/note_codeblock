@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>note.com Code Block Visualizer Test Page</title>
+  
+  <!-- Mock Chrome Extension storage API for local browser preview -->
+  <script>
+    const mockStorage = {
+      theme: 'one-dark',
+      font: 'jetbrains-mono',
+      fontSize: 14,
+      showLineNumbers: true,
+      lineHeight: 1.6
+    };
+    
+    const listeners = [];
+    
+    window.chrome = {
+      storage: {
+        sync: {
+          get: (defaults, callback) => {
+            setTimeout(() => {
+              callback({ ...defaults, ...mockStorage });
+            }, 50);
+          },
+          set: (obj, callback) => {
+            Object.assign(mockStorage, obj);
+            // Trigger change listeners
+            listeners.forEach(listener => {
+              listener(obj, 'sync');
+            });
+            if (callback) callback();
+          }
+        },
+        onChanged: {
+          addListener: (callback) => {
+            listeners.push(callback);
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Load Extension content stylesheet and js script -->
+  <link rel="stylesheet" href="content.css">
+  <script defer src="content.js"></script>
+
+  <!-- Basic mock styles for the page layout (resembling note.com read mode) -->
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #fafafa;
+      color: #333333;
+      padding: 40px 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .article-container {
+      max-width: 680px;
+      width: 100%;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e5e5e5;
+    }
+
+    h1.article-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    p.article-paragraph {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333333;
+      margin-bottom: 20px;
+    }
+
+    /* Interactive Control Panel at the bottom */
+    .control-panel {
+      margin-top: 40px;
+      max-width: 680px;
+      width: 100%;
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      font-family: system-ui, sans-serif;
+    }
+
+    .control-panel h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+      color: #f8fafc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-panel .badge {
+      font-size: 11px;
+      background-color: #8b5cf6;
+      padding: 2px 8px;
+      border-radius: 99px;
+      color: white;
+    }
+
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .control-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .control-item label {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .control-item select, .control-item input[type="range"] {
+      background-color: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      padding: 8px;
+      border-radius: 6px;
+      outline: none;
+      font-size: 13px;
+    }
+
+    .control-item select:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    /* styling for the original pre to match note.com default styling initially */
+    pre[data-name="preCode"] {
+      background-color: #f5f5f5;
+      padding: 16px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 20px 0;
+      border: 1px solid #e1e1e1;
+    }
+    pre[data-name="preCode"] code {
+      font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+    }
+    .hljs-keyword { color: #d73a49; font-weight: bold; }
+    .hljs-number { color: #005cc5; }
+    .hljs-string { color: #032f62; }
+    .hljs-comment { color: #6a737d; font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <div class="article-container">
+    <h1 class="article-title">Javaアルゴリズム入門：階乗の計算について</h1>
+    <p class="article-paragraph">
+      この記事では、Javaを使った基本的な繰り返し処理（forループ）による階乗計算アルゴリズムのコード例を解説します。
+    </p>
+
+    <!-- Original note.com style code block 1 -->
+    <pre name="51b616e2-fab9-47ce-b68e-264ece56fbd7" id="51b616e2-fab9-47ce-b68e-264ece56fbd7" data-name="preCode"><code data-name="code" class="hljs java"><span class="hljs-keyword">int</span> answer = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">10</span>; i++) {
+  answer *= i;
+}</code></pre>
+
+    <p class="article-paragraph">
+      上記のコードブロックは、1から10までの総乗（10の階乗）を算出しています。
+      続いて、HTMLマークアップとJavaScriptの連携例も紹介します。
+    </p>
+
+    <!-- Original note.com style code block 2 (HTML/JS) -->
+    <pre name="8ca38491-a83d-4c8d-bf3f-c68e146c245c" id="8ca38491-a83d-4c8d-bf3f-c68e146c245c" data-name="preCode"><code data-name="code" class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"container"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello note.com!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"action-btn"</span>&gt;</span>Click Me<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+  </div>
+
+  <!-- Realtime Controller (representing the popup UI) -->
+  <div class="control-panel">
+    <h3>
+      <span>Extension Settings Controller (Realtime Simulator)</span>
+      <span class="badge">Local Preview</span>
+    </h3>
+    <div class="control-row">
+      <div class="control-item">
+        <label for="sim-theme">カラーテーマ</label>
+        <select id="sim-theme">
+          <option value="one-dark" selected>One Dark Pro</option>
+          <option value="dracula">Dracula</option>
+          <option value="monokai">Monokai</option>
+          <option value="github-dark">GitHub Dark</option>
+          <option value="github-light">GitHub Light</option>
+        </select>
+      </div>
+      <div class="control-item">
+        <label for="sim-font">フォントファミリー</label>
+        <select id="sim-font">
+          <option value="jetbrains-mono" selected>JetBrains Mono</option>
+          <option value="fira-code">Fira Code</option>
+          <option value="source-code-pro">Source Code Pro</option>
+          <option value="system-mono">System Monospace</option>
+        </select>
+      </div>
+      <div class="control-item">
+        <label for="sim-fontSize">フォントサイズ (<span id="sim-size-lbl">14px</span>)</label>
+        <input type="range" id="sim-fontSize" min="11" max="22" step="1" value="14">
+      </div>
+    </div>
+    <div class="toggle-row">
+      <input type="checkbox" id="sim-showLineNumbers" checked>
+      <label for="sim-showLineNumbers">行番号を表示する</label>
+    </div>
+  </div>
+
+  <script>
+    // Link simulated controls directly to mock chrome.storage.sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const themeSel = document.getElementById('sim-theme');
+      const fontSel = document.getElementById('sim-font');
+      const sizeSli = document.getElementById('sim-fontSize');
+      const sizeLbl = document.getElementById('sim-size-lbl');
+      const linesChk = document.getElementById('sim-showLineNumbers');
+
+      const triggerSync = () => {
+        chrome.storage.sync.set({
+          theme: themeSel.value,
+          font: fontSel.value,
+          fontSize: parseInt(sizeSli.value, 10),
+          showLineNumbers: linesChk.checked
+        });
+      };
+
+      themeSel.addEventListener('change', triggerSync);
+      fontSel.addEventListener('change', triggerSync);
+      
+      sizeSli.addEventListener('input', (e) => {
+        sizeLbl.textContent = `${e.target.value}px`;
+        triggerSync();
+      });
+      
+      linesChk.addEventListener('change', triggerSync);
+    });
+  </script>
+</body>
+</html>
